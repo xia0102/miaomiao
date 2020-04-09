@@ -3,6 +3,14 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+import axios from 'axios'
+Vue.prototype.$axios = axios;
+
+// 过滤器(过滤图片的宽高)
+Vue.filter('setWH',(url,arg)=>{
+  return url.replace(/w\.h/,arg);
+})
+
 Vue.config.productionTip = false
 
 new Vue({

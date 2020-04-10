@@ -32,7 +32,6 @@ export default {
         }
     },
     methods:{
-        // axios终止多次请求
         cancelRequest(){
             if(typeof this.source === 'function'){
                 this.source('终止请求')
@@ -41,14 +40,14 @@ export default {
     },
     watch:{
         message(newVal){
-
             this.cancelRequest();
             var that = this;
+            var cityId = this.$store.state.city.id;
             
-            this.$axios.get('/api/searchList?cityId=10&kw='+newVal,{
+            this.$axios.get('/api/searchList?cityId='+cityId+'&kw='+newVal,{
                 cancelToken:new this.$axios.CancelToken(function(c){
                     that.source = c;
-                    console.log(111);
+                    // console.log(111);
                 })
             }).then((res)=>{
                 var msg = res.data.msg;

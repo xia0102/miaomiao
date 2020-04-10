@@ -1,46 +1,60 @@
 <template>
     <div class="cinema_body">
+        <Loading v-if="isLoading" />
+        <Scroller v-else>
         <ul>
             <li v-for="item in cinemaList" :key="item.id">
                 <div>
-                    <span>{{item.nm}}</span>
-                    <span class="q"><span class="price">{{item.sellPrice}}</span> 元起</span>
+                    <span>{{ item.nm }}</span>
+                    <span class="q"><span class="price">{{ item.sellPrice }}</span> 元起</span>
                 </div>
                 <div class="address">
-                    <span>{{item.addr}}</span>
-                    <span>{{item.distance}}</span>
+                    <span>{{ item.addr }}</span>
+                    <span>{{ item.distance }}</span>
                 </div>
                 <div class="card">
-                    <div v-for="(num,key) in item.tag" :key="key" v-if="num===1" :class="key | classCard">{{key | formatCard}}</div>
+                    <div v-for="(num,key) in item.tag" v-if="num===1" :key="key" :class=" key | classCard ">{{ key | formatCard }}</div>
                 </div>
             </li>
         </ul>
+        </Scroller>
     </div>
 </template>
+
 <script>
 export default {
-    name:'CiList',
+    name : 'CiList',
     data(){
         return {
-            cinemaList:[]
-        }
+            cinemaList : [],
+            isLoading : true,
+            prevCityId : -1
+        };
     },
-    mounted(){
-        this.$axios.get('/api/cinemaList?cityId=10').then((res)=>{
+    // 被 keep-alive 缓存的组件激活时调用。该钩子在服务器端渲染期间不被调用
+    activated(){
+        var cityId = this.$store.state.city.id;
+        // 城市没变，不重新加载
+        if( this.prevCityId === cityId ){ return; }
+        this.isLoading = true;
+
+        this.$axios.get('/api/cinemaList?cityId='+cityId).then((res)=>{
             var msg = res.data.msg;
             if(msg === 'ok'){
                 this.cinemaList = res.data.data.cinemas;
+                this.isLoading = false;
+                this.prevCityId = cityId
             }
-        })
+        });
     },
-    // 打折卡的过滤
-    filters:{
-        formatCard(key){   
+    // 优惠卡过滤
+    filters : {
+        formatCard(key){
             var card = [
-                { key:'allowRefund',value:'改签' },
-                { key:'endorse',value:'退' },
-                { key:'sell',value:'折扣卡' },
-                { key:'snack',value:'小吃' }
+                { key : 'allowRefund' , value : '改签' },
+                { key : 'endorse' , value : '退' },
+                { key : 'sell' , value : '折扣卡' },
+                { key : 'snack' , value : '小吃'}
             ];
             for(var i=0;i<card.length;i++){
                 if(card[i].key === key){
@@ -51,10 +65,10 @@ export default {
         },
         classCard(key){
             var card = [
-                { key:'allowRefund',value:'bl' },
-                { key:'endorse',value:'bl' },
-                { key:'sell',value:'or' },
-                { key:'snack',value:'or' }
+                { key : 'allowRefund' , value : 'bl' },
+                { key : 'endorse' , value : 'bl' },
+                { key : 'sell' , value : 'or' },
+                { key : 'snack' , value : 'or'}
             ];
             for(var i=0;i<card.length;i++){
                 if(card[i].key === key){
@@ -66,6 +80,7 @@ export default {
     }
 }
 </script>
+
 <style scoped>
 #content .cinema_body{ flex:1; overflow:auto;}
 .cinema_body ul{ padding:20px;}

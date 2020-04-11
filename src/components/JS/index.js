@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import MessageBox from './MessageBox';
 
+// 扩展全局组件
 export var messageBox = (function(){
     var defaults = { // 默认值
         title: '',
@@ -11,6 +12,7 @@ export var messageBox = (function(){
         handleOk: null
     };
 
+    // 创建Vue构照器
     var Mycomponent = Vue.extend(MessageBox);
 
     return function(opts){ // ops配置参数

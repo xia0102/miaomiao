@@ -14,11 +14,13 @@
 					<i class="iconfont icon-sousuo"></i>
 				</router-link>
             </div>
+            <!-- keep-alive:对组件进行缓存，从而节省性能 -->
             <keep-alive>
-                <router-view></router-view>
+                <router-view />
             </keep-alive>
         </div>
         <TabBar />
+        <router-view name="detail" />
     </div>
 </template>
 <script>

@@ -42,6 +42,12 @@ export default {
                 this.prevCityId = cityId;
             }
         })
+    },
+    methods:{
+        // 点击显示详情页
+        handleToDetail(movieId){
+            this.$router.push('/movie/detail/2/'+movieId);
+        }
     }
 }
 </script>

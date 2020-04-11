@@ -46,6 +46,10 @@ export default {
         });
     },
     methods : {
+        // 点击显示详情页
+        handleToDetail(movieId){
+            this.$router.push('/movie/detail/1/'+movieId);
+        },
         // 下拉刷新
         handleToScroll(pos){
             if( pos.y > 30 ){
